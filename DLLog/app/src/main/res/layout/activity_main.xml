@@ -94,7 +94,7 @@
                     android:text="비밀번호 찾기"
                     android:layout_margin="10dp"/>
                 <TextView
-                    android:id="@+id/signIN"
+                    android:id="@+id/signUP"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/nanum_barun_gothic"
