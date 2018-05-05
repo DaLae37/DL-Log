@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.dalae37.android.dl_log">
-
+    <uses-permission android:name="android.permission.INTERNET"/>
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -17,7 +17,8 @@
             </intent-filter>
         </activity>
         <activity android:name=".SignUP_Activity" />
-        <activity android:name=".FunctionActivity"></activity>
+        <activity android:name=".FunctionActivity" />
+        <activity android:name=".InquiryActivity" android:exported="true"/>
     </application>
 
 </manifest>
