@@ -8,7 +8,11 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
@@ -22,17 +26,25 @@ import javax.net.ssl.HttpsURLConnection;
 public class InquiryActivity extends AppCompatActivity {
     Button inquiryButton;
     EditText inputNickname;
+    TextView printView;
 
     final private String url = "https://kr.api.riotgames.com";
-    final private String API_KEY = "?api_key=RGAPI-7de46ddc-ef9a-4b42-90e7-9a6edaf351b0";
-    final private String PAGE = "/lol/summoner/v3/summoners/by-name/";
+    final private String API_KEY = "?api_key=RGAPI-8d3f9b64-57b9-41c2-a7d7-147323d95211";
+    final private String INFO_PAGE = "/lol/summoner/v3/summoners/by-name/";
+    final private String LEAGUE_PAGE = "/lol/league/v3/positions/by-summoner/";
 
-    String result;
-    Thread thread = new Thread(new Runnable() {
+    String name;
+    long summonerLevel, id;
+
+    boolean isUnrank, isFlexrank;
+    String soloRank, flexRank, soloTier, flexTier, soloLeagueName, flexLeagueName;
+    int soloWins,flexWins, soloLose, flexLose, soloPoint, flexPoint;
+    String userInfo_json;
+    Thread userInfo_thread = new Thread(new Runnable() {
         @Override
         public void run() {
             try{
-                URL fullUrl = new URL(url + PAGE + inputNickname.getText().toString() + API_KEY);
+                URL fullUrl = new URL(url + INFO_PAGE + inputNickname.getText().toString() + API_KEY);
                 HttpsURLConnection conn = (HttpsURLConnection) fullUrl.openConnection();
                 conn.setConnectTimeout(3000); //응답시간 3초
                 conn.setReadTimeout(3000); //Read연결시간
@@ -59,11 +71,49 @@ public class InquiryActivity extends AppCompatActivity {
                 bufferedReader.close();
                 conn.disconnect();
 
-                result = sb.toString().trim();
-                Log.e("e",result);
+                userInfo_json = sb.toString().trim();
             }
             catch (Exception e){
-                Log.e("inquiryActivity", e.toString());
+                Log.e("getUserInfo", e.toString());
+            }
+        }
+    });
+    String userLeague_json;
+    Thread userLeague_thread = new Thread(new Runnable() {
+        @Override
+        public void run() {
+            try{
+                URL fullUrl = new URL(url + LEAGUE_PAGE + String.valueOf(id) + API_KEY);
+                HttpsURLConnection conn = (HttpsURLConnection) fullUrl.openConnection();
+                conn.setConnectTimeout(3000); //응답시간 3초
+                conn.setReadTimeout(3000); //Read연결시간
+                conn.setRequestMethod("GET");
+                conn.setDoInput(true);
+                conn.setUseCaches(false);
+                conn.connect();
+                int responStatusCode = conn.getResponseCode();
+                InputStream inputStream;
+                if(responStatusCode == conn.HTTP_OK){
+                    inputStream = conn.getInputStream();
+                }
+                else{
+                    inputStream = conn.getErrorStream();
+                }
+                InputStreamReader inputStreamReader = new InputStreamReader(inputStream, "UTF-8");
+                BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
+
+                StringBuilder sb = new StringBuilder();
+                String line;
+                while((line = bufferedReader.readLine()) != null){
+                    sb.append(line);
+                }
+                bufferedReader.close();
+                conn.disconnect();
+
+                userLeague_json = sb.toString().trim();
+            }
+            catch (Exception e){
+                Log.e("getLeagueInfo", e.toString());
             }
         }
     });
@@ -72,6 +122,7 @@ public class InquiryActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_inquiry);
 
+        printView = (TextView)findViewById(R.id.printView);
         inputNickname = (EditText)findViewById(R.id.inputNickname);
         inquiryButton = (Button)findViewById(R.id.inquiryButton);
         inquiryButton.setOnClickListener(new View.OnClickListener() {
@@ -80,8 +131,13 @@ public class InquiryActivity extends AppCompatActivity {
                 Pattern validating = Pattern.compile("^[0-9\\\\p{L} _\\\\.]+$");
                 Matcher matcher = validating.matcher(inputNickname.getText().toString());
                 if(!matcher.find()){
-                    Log.e("쓰레드","성공");
-                    thread.start();
+                    userInfo_thread.start();
+                    while(userInfo_thread.isAlive()){}
+                    ParsingUserInfo();
+                    userLeague_thread.start();
+                    while(userLeague_thread.isAlive()){}
+                    ParsingUserLeague();
+                    PrintData();
                 }
                 else{
                     Toast.makeText(getApplicationContext(),"잘못된 닉네임입니다", Toast.LENGTH_SHORT).show();
@@ -91,5 +147,70 @@ public class InquiryActivity extends AppCompatActivity {
 
     }
 
+    public void PrintData(){
+        StringBuffer sb = new StringBuffer();
+        sb.append("닉네임 : " + name + "\n" + "레벨 : " + summonerLevel + "\n");
+        if(isUnrank){
+            sb.append("언랭크");
+        }
+        else{
+            sb.append("솔로랭크\n리그 : " + soloLeagueName + "\t티어 : " + soloTier + " " + soloRank + "\n" + "승 : " + soloWins + " 패 : " + soloLose + "\n");
+            if(isFlexrank){
+                sb.append("자유랭크\n리그 : " + flexLeagueName + "\t티어 : " + flexTier + " " + flexRank + "\n" + "승 : " + flexWins + " 패 : " + flexLose + "\n");
+            }
+        }
+        printView.setText(sb.toString());
+    }
 
+    public void ParsingUserInfo(){
+        try {
+            JSONObject jObject = new JSONObject(userInfo_json);
+            name = jObject.getString("name");
+            summonerLevel = jObject.getLong("summonerLevel");
+            id = jObject.getLong("id");
+        }
+        catch (Exception e){
+            Log.e("ParsingUserInfo", e.toString());
+        }
+    }
+
+    public void ParsingUserLeague(){
+        if(userLeague_json.equals("[]")){
+            isUnrank = true;
+        }
+        else {
+            try {
+                JSONArray jArray = new JSONArray(userLeague_json);
+                JSONObject jObject;
+                if (jArray.length() != 1) {
+                    jObject = jArray.getJSONObject(0);
+                    soloLeagueName = jObject.getString("leagueName");
+                    soloTier = jObject.getString("tier");
+                    soloRank = jObject.getString("rank");
+                    soloPoint = jObject.getInt("leaguePoints");
+                    soloWins = jObject.getInt("wins");
+                    soloLose = jObject.getInt("losses");
+                    jObject = jArray.getJSONObject(1);
+                    flexLeagueName = jObject.getString("leagueName");
+                    flexTier = jObject.getString("tier");
+                    flexRank = jObject.getString("rank");
+                    flexPoint = jObject.getInt("leaguePoints");
+                    flexWins = jObject.getInt("wins");
+                    flexLose = jObject.getInt("losses");
+                    isFlexrank = true;
+                } else {
+                    jObject = jArray.getJSONObject(0);
+                    soloLeagueName = jObject.getString("leagueName");
+                    soloTier = jObject.getString("tier");
+                    soloRank = jObject.getString("rank");
+                    soloPoint = jObject.getInt("leaguePoints");
+                    soloWins = jObject.getInt("wins");
+                    soloLose = jObject.getInt("losses");
+                    isFlexrank = false;
+                }
+            } catch (Exception e) {
+                Log.e("Array", e.toString());
+            }
+        }
+    }
 }
