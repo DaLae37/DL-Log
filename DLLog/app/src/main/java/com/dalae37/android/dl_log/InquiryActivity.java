@@ -1,6 +1,7 @@
 package com.dalae37.android.dl_log;
 
 import android.os.AsyncTask;
+import android.os.Handler;
 import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -29,7 +30,7 @@ public class InquiryActivity extends AppCompatActivity {
     TextView printView;
 
     final private String url = "https://kr.api.riotgames.com";
-    final private String API_KEY = "?api_key=RGAPI-8d3f9b64-57b9-41c2-a7d7-147323d95211";
+    final private String API_KEY = "?api_key=RGAPI-776d33d0-f5b2-45af-ad25-1bac3c183488";
     final private String INFO_PAGE = "/lol/summoner/v3/summoners/by-name/";
     final private String LEAGUE_PAGE = "/lol/league/v3/positions/by-summoner/";
 
@@ -40,7 +41,26 @@ public class InquiryActivity extends AppCompatActivity {
     String soloRank, flexRank, soloTier, flexTier, soloLeagueName, flexLeagueName;
     int soloWins,flexWins, soloLose, flexLose, soloPoint, flexPoint;
     String userInfo_json;
-    Thread userInfo_thread = new Thread(new Runnable() {
+
+    final Handler handler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            switch (msg.what){
+                case 1 :
+                    ParsingUserInfo();
+                    userLeague_thread.start();
+                    break;
+                case 2:
+                    ParsingUserLeague();
+                    PrintData();
+                    break;
+                default :
+                    break;
+            }
+        }
+    };
+
+    final Thread userInfo_thread = new Thread(new Runnable() {
         @Override
         public void run() {
             try{
@@ -72,6 +92,10 @@ public class InquiryActivity extends AppCompatActivity {
                 conn.disconnect();
 
                 userInfo_json = sb.toString().trim();
+
+                Message message = Message.obtain();
+                message.what = 1;
+                handler.sendMessage(message);
             }
             catch (Exception e){
                 Log.e("getUserInfo", e.toString());
@@ -79,7 +103,7 @@ public class InquiryActivity extends AppCompatActivity {
         }
     });
     String userLeague_json;
-    Thread userLeague_thread = new Thread(new Runnable() {
+    final Thread userLeague_thread = new Thread(new Runnable() {
         @Override
         public void run() {
             try{
@@ -111,6 +135,9 @@ public class InquiryActivity extends AppCompatActivity {
                 conn.disconnect();
 
                 userLeague_json = sb.toString().trim();
+                Message message = Message.obtain();
+                message.what = 2;
+                handler.sendMessage(message);
             }
             catch (Exception e){
                 Log.e("getLeagueInfo", e.toString());
@@ -132,12 +159,6 @@ public class InquiryActivity extends AppCompatActivity {
                 Matcher matcher = validating.matcher(inputNickname.getText().toString());
                 if(!matcher.find()){
                     userInfo_thread.start();
-                    while(userInfo_thread.isAlive()){}
-                    ParsingUserInfo();
-                    userLeague_thread.start();
-                    while(userLeague_thread.isAlive()){}
-                    ParsingUserLeague();
-                    PrintData();
                 }
                 else{
                     Toast.makeText(getApplicationContext(),"잘못된 닉네임입니다", Toast.LENGTH_SHORT).show();

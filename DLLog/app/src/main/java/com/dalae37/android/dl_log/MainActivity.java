@@ -49,9 +49,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 if(CheckIDandPW(id,pw)){
                     Toast.makeText(getApplicationContext(), "로그인 성공", Toast.LENGTH_SHORT).show();
 
-                    Intent intent = new Intent(getApplicationContext(), FunctionActivity.class);
-                    startActivity(intent);
-                    finish();
+                    FunctionActivity();
                 }
                 else{
                     Toast.makeText(getApplicationContext(),"아이디 혹은 비밀번호가 틀립니다",Toast.LENGTH_SHORT).show();
@@ -67,6 +65,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.findPW :
                 break;
             case R.id.nonMember :
+                FunctionActivity();
                 break;
             default :
                 break;
@@ -83,5 +82,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             hasSign = (cursor.getString(0).equals(id)) && (cursor.getString(1).equals(pw));
         }
         return hasSign;
+    }
+
+    public void FunctionActivity(){
+        Intent intent = new Intent(getApplicationContext(), FunctionActivity.class);
+        startActivity(intent);
+        finish();
     }
 }
