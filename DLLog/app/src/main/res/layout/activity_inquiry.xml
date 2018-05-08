@@ -18,7 +18,7 @@
             android:id="@+id/inputNickname"
             android:layout_width="200dp"
             android:layout_height="wrap_content"
-            android:maxLength="8"
+            android:maxLength="16"
             android:inputType="text"/>
         <Button
             android:id="@+id/inquiryButton"

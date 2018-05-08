@@ -30,7 +30,7 @@ public class InquiryActivity extends AppCompatActivity {
     TextView printView;
 
     final private String url = "https://kr.api.riotgames.com";
-    final private String API_KEY = "?api_key=RGAPI-776d33d0-f5b2-45af-ad25-1bac3c183488";
+    final private String API_KEY = "?api_key=RGAPI-7d5f443c-598a-404e-bc4c-98a7149ebb66";
     final private String INFO_PAGE = "/lol/summoner/v3/summoners/by-name/";
     final private String LEAGUE_PAGE = "/lol/league/v3/positions/by-summoner/";
 
@@ -175,9 +175,9 @@ public class InquiryActivity extends AppCompatActivity {
             sb.append("언랭크");
         }
         else{
-            sb.append("솔로랭크\n리그 : " + soloLeagueName + "\t티어 : " + soloTier + " " + soloRank + "\n" + "승 : " + soloWins + " 패 : " + soloLose + "\n");
+            sb.append("솔로랭크\n리그 : " + soloLeagueName + "\n티어 : " + soloTier + " " + soloRank + "\t" + soloPoint + "점" + "\n" + "승 : " + soloWins + " 패 : " + soloLose + "\n");
             if(isFlexrank){
-                sb.append("자유랭크\n리그 : " + flexLeagueName + "\t티어 : " + flexTier + " " + flexRank + "\n" + "승 : " + flexWins + " 패 : " + flexLose + "\n");
+                sb.append("자유랭크\n리그 : " + flexLeagueName + "\n티어 : " + flexTier + " " + flexRank + "\t" + flexPoint + "점" + "\n" + "승 : " + flexWins + " 패 : " + flexLose + "\n");
             }
         }
         printView.setText(sb.toString());
