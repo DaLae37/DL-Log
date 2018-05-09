@@ -12,7 +12,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="@font/nanum_barun_gothic"
-            android:text="DL - LOG"
+            android:text="@string/app_name"
             android:textSize="40sp"
             android:layout_margin="10sp"/>
     </LinearLayout> <!--HEADER-->
@@ -35,13 +35,13 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/nanum_barun_gothic"
-                    android:hint="ID"
+                    android:hint="@string/inputID"
                     android:inputType="text"/>
                 <EditText
                     android:id="@+id/inputPW"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Password"
+                    android:hint="@string/inputPW"
                     android:inputType="textPassword"/>
             </LinearLayout>
             <Button
@@ -52,7 +52,7 @@
                 android:layout_marginRight="10dp"
                 android:layout_marginTop="10dp"
                 android:layout_marginBottom="10dp"
-                android:text="로그인"/>
+                android:text="@string/logIN"/>
         </LinearLayout>
         <LinearLayout
             android:layout_width="match_parent"
@@ -69,7 +69,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/nanum_barun_gothic"
-                    android:text="비 회원으로 이용"
+                    android:text="@string/nonMember"
                     android:textStyle="bold"
                     android:layout_margin="10dp" />
             </LinearLayout>
@@ -84,21 +84,21 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/nanum_barun_gothic"
-                    android:text="아이디 찾기"
+                    android:text="@string/findID"
                     android:layout_margin="10dp"/>
                 <TextView
                     android:id="@+id/findPW"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/nanum_barun_gothic"
-                    android:text="비밀번호 찾기"
+                    android:text="@string/findPW"
                     android:layout_margin="10dp"/>
                 <TextView
                     android:id="@+id/signUP"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/nanum_barun_gothic"
-                    android:text="회원가입"
+                    android:text="@string/signUP"
                     android:layout_margin="10dp"/>
             </LinearLayout>
         </LinearLayout>

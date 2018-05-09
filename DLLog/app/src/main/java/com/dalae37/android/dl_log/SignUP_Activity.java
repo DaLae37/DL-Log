@@ -40,7 +40,7 @@ public class SignUP_Activity extends AppCompatActivity implements View.OnClickLi
                 db.execSQL("insert into member_tb (id, pw, nickname) values(?,?,?)", new String[]{id.getText().toString(), pw.getText().toString(), nick.getText().toString()});
                 db.close();
 
-                Toast.makeText(getApplicationContext(),"아이디 생성 성공", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(),R.string.successCreateID, Toast.LENGTH_SHORT).show();
 
                 CloseSignUPActivity();
                 break;

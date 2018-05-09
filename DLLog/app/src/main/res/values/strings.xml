@@ -1,3 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">DL-Log</string>
+    <string name="inputID">아이디</string>
+    <string name="inputPW">비밀번호</string>
+    <string name="nonMember">비 회원으로 이용</string>
+    <string name="findID">아이디 찾기</string>
+    <string name="findPW">비밀번호 찾기</string>
+    <string name="signUP">회원가입</string>
+    <string name="logIN">로그인</string>
+    <string name="successCreateID">"아이디 생성 성공"</string> <!--ID generation successful-->
 </resources>
