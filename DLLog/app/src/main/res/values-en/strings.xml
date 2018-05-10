@@ -1,4 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
+    <string name="app_name">DL-Log</string>
+    <string name="inputID">ID</string>
+    <string name="inputPW">Password</string>
+    <string name="nonMember">Use as a non-member</string>
+    <string name="findID">Find ID</string>
+    <string name="findPW">Find PW</string>
+    <string name="signUP">Sign up</string>
+    <string name="logIN">Sign in</string>
+    <string name="successCreateID">"ID generation successful"</string>
+    <string name="search_button">Search</string>
+    <string name="nickname_field">Nickname : </string>
+    <string name="log_search">Log Inqury</string>
 </resources>

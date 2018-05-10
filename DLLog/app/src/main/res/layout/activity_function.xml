@@ -7,5 +7,5 @@
         android:id="@+id/toInquiry"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="전적조회"/>
+        android:text="@string/log_search"/>
 </LinearLayout>

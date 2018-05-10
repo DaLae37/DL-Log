@@ -9,4 +9,7 @@
     <string name="signUP">회원가입</string>
     <string name="logIN">로그인</string>
     <string name="successCreateID">"아이디 생성 성공"</string> <!--ID generation successful-->
+    <string name="search_button">검색</string>
+    <string name="nickname_field">닉네임 : </string>
+    <string name="log_search">전적 조회</string>
 </resources>
