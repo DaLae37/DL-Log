@@ -30,7 +30,7 @@ public class InquiryActivity extends AppCompatActivity {
     TextView printView;
 
     final private String url = "https://kr.api.riotgames.com";
-    final private String API_KEY = "?api_key=RGAPI-7d5f443c-598a-404e-bc4c-98a7149ebb66";
+    final private String API_KEY = "?api_key=RGAPI-b75df511-8e5c-4d56-81d7-fded3d502af6";
     final private String INFO_PAGE = "/lol/summoner/v3/summoners/by-name/";
     final private String LEAGUE_PAGE = "/lol/league/v3/positions/by-summoner/";
 
