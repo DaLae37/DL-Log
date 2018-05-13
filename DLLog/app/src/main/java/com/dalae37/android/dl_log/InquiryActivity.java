@@ -48,6 +48,7 @@ public class InquiryActivity extends AppCompatActivity {
             switch (msg.what){
                 case 1 :
                     ParsingUserInfo();
+                    userLeague_thread = new Thread(userLeague_runnable);
                     userLeague_thread.start();
                     break;
                 case 2:
@@ -59,8 +60,7 @@ public class InquiryActivity extends AppCompatActivity {
             }
         }
     };
-
-    final Thread userInfo_thread = new Thread(new Runnable() {
+    final Runnable userInfo_runnable = new Runnable() {
         @Override
         public void run() {
             try{
@@ -101,9 +101,10 @@ public class InquiryActivity extends AppCompatActivity {
                 Log.e("getUserInfo", e.toString());
             }
         }
-    });
+    };
+    Thread userInfo_thread, userLeague_thread;
     String userLeague_json;
-    final Thread userLeague_thread = new Thread(new Runnable() {
+    final Runnable userLeague_runnable = new Runnable(){
         @Override
         public void run() {
             try{
@@ -143,7 +144,7 @@ public class InquiryActivity extends AppCompatActivity {
                 Log.e("getLeagueInfo", e.toString());
             }
         }
-    });
+    };
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -158,6 +159,7 @@ public class InquiryActivity extends AppCompatActivity {
                 Pattern validating = Pattern.compile("^[0-9\\\\p{L} _\\\\.]+$");
                 Matcher matcher = validating.matcher(inputNickname.getText().toString());
                 if(!matcher.find()){
+                    userInfo_thread = new Thread(userInfo_runnable);
                     userInfo_thread.start();
                 }
                 else{
@@ -200,6 +202,7 @@ public class InquiryActivity extends AppCompatActivity {
             isUnrank = true;
         }
         else {
+            isUnrank = false;
             try {
                 JSONArray jArray = new JSONArray(userLeague_json);
                 JSONObject jObject;
