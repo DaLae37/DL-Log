@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <TextView
+        android:id="@+id/gameType"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp"
+        android:text="일반게임"
+        />
+    <TextView
+        android:id="@+id/whenPlay"
+        android:layout_below="@id/gameType"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp"
+        android:text="하루전"
+        />
+    <TextView
+        android:id="@+id/WinOrLose"
+        android:layout_below="@id/whenPlay"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp"
+        android:text="승리"
+        />
+    <TextView
+        android:id="@+id/playTime"
+        android:layout_below="@+id/WinOrLose"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp"
+        android:text="37분"
+        />
+    <TextView
+        android:id="@+id/KDA"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="200dp"
+        android:text="1킬 5뎃 1어시"
+        />
+    <TextView
+        android:id="@+id/Level"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="200dp"
+        android:layout_below="@+id/KDA"
+        android:text="16렙"
+        />
+    <TextView
+        android:id="@+id/CS"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="200dp"
+        android:layout_below="@+id/Level"
+        android:text="200cs (6.4)cs"
+        />
+    <ImageView
+        android:id="@+id/championImage"
+        android:layout_marginLeft="75dp"
+        android:layout_width="64dp"
+        android:layout_height="64dp"
+        android:src="@drawable/Aatrox"
+        />
+
+</RelativeLayout>

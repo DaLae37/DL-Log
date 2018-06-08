@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -30,7 +31,7 @@ public class InquiryActivity extends AppCompatActivity {
     Button inquiryButton;
     EditText inputNickname;
     TextView printView;
-
+    ListView logList;
     List<Match> matches = new ArrayList<Match>();
 
     final private String url = "https://kr.api.riotgames.com";
@@ -205,6 +206,7 @@ public class InquiryActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_inquiry);
 
+        logList = (ListView)findViewById(R.id.logList);
         printView = (TextView)findViewById(R.id.printView);
         inputNickname = (EditText)findViewById(R.id.inputNickname);
         inquiryButton = (Button)findViewById(R.id.inquiryButton);
@@ -249,7 +251,7 @@ public class InquiryActivity extends AppCompatActivity {
                 JSONObject object =  jArray.getJSONObject(i);
                 Match m = new Match(object.getString("lane"), object.getLong("gameId"), object.getInt("champion"),object.getLong("timestamp"),object.getInt("queue"),object.getString("role"), object.getInt("season"));
                 matches.add(m);
-            };
+            }
         }
         catch (Exception e){
             Log.e("ParsingUserLog", e.toString());
