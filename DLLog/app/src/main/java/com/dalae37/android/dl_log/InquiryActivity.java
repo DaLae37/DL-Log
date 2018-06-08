@@ -19,6 +19,8 @@ import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -29,32 +31,43 @@ public class InquiryActivity extends AppCompatActivity {
     EditText inputNickname;
     TextView printView;
 
+    List<Match> matches = new ArrayList<Match>();
+
     final private String url = "https://kr.api.riotgames.com";
     final private String API_KEY = "?api_key=RGAPI-b75df511-8e5c-4d56-81d7-fded3d502af6";
     final private String INFO_PAGE = "/lol/summoner/v3/summoners/by-name/";
     final private String LEAGUE_PAGE = "/lol/league/v3/positions/by-summoner/";
+    final private String MATCH_PAGE = "/lol/match/v3/matchlists/by-account/";
+    Thread userInfo_thread, userLeague_thread, userLog_thread;
+    long summonerLevel, id, accountId;
 
-    String name;
-    long summonerLevel, id;
-
-    boolean isUnrank, isFlexrank;
-    String soloRank, flexRank, soloTier, flexTier, soloLeagueName, flexLeagueName;
+    boolean isSummoner, isUnrank, isFlexrank;
+    String soloRank, flexRank, soloTier, flexTier, soloLeagueName, flexLeagueName, name;
     int soloWins,flexWins, soloLose, flexLose, soloPoint, flexPoint;
-    String userInfo_json;
+    String userInfo_json, userLeague_json, userLog_json;
 
     final Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
             switch (msg.what){
                 case 1 :
-                    ParsingUserInfo();
-                    userLeague_thread = new Thread(userLeague_runnable);
-                    userLeague_thread.start();
+                    if(isSummoner){
+                        ParsingUserInfo();
+                        userLeague_thread = new Thread(userLeague_runnable);
+                        userLeague_thread.start();
+                    }
+                    else{
+                        printView.setText("유저를 찾을 수 없습니다.");
+                    }
                     break;
                 case 2:
                     ParsingUserLeague();
                     PrintData();
+                    userLog_thread = new Thread(userLog_runnable);
+                    userLog_thread.start();
                     break;
+                case 3:
+                    ParsingUserLog();
                 default :
                     break;
             }
@@ -76,9 +89,11 @@ public class InquiryActivity extends AppCompatActivity {
                 InputStream inputStream;
                 if(responStatusCode == conn.HTTP_OK){
                     inputStream = conn.getInputStream();
+                    isSummoner = true;
                 }
                 else{
                     inputStream = conn.getErrorStream();
+                    isSummoner = false;
                 }
                 InputStreamReader inputStreamReader = new InputStreamReader(inputStream, "UTF-8");
                 BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
@@ -102,8 +117,6 @@ public class InquiryActivity extends AppCompatActivity {
             }
         }
     };
-    Thread userInfo_thread, userLeague_thread;
-    String userLeague_json;
     final Runnable userLeague_runnable = new Runnable(){
         @Override
         public void run() {
@@ -142,6 +155,48 @@ public class InquiryActivity extends AppCompatActivity {
             }
             catch (Exception e){
                 Log.e("getLeagueInfo", e.toString());
+            }
+        }
+    };
+    final Runnable userLog_runnable = new Runnable() {
+        @Override
+        public void run() {
+            try{
+                URL fullUrl = new URL(url + MATCH_PAGE + String.valueOf(accountId) + API_KEY);
+                HttpsURLConnection conn = (HttpsURLConnection) fullUrl.openConnection();
+                conn.setConnectTimeout(3000); //응답시간 3초
+                conn.setReadTimeout(3000); //Read연결시간
+                conn.setRequestMethod("GET");
+                conn.setDoInput(true);
+                conn.setUseCaches(false);
+                conn.connect();
+                int responStatusCode = conn.getResponseCode();
+                InputStream inputStream;
+                if(responStatusCode == conn.HTTP_OK){
+                    inputStream = conn.getInputStream();
+                }
+                else{
+                    inputStream = conn.getErrorStream();
+                }
+                InputStreamReader inputStreamReader = new InputStreamReader(inputStream, "UTF-8");
+                BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
+
+                StringBuilder sb = new StringBuilder();
+                String line;
+                while((line = bufferedReader.readLine()) != null){
+                    sb.append(line);
+                }
+                bufferedReader.close();
+                conn.disconnect();
+
+                userLog_json = sb.toString().trim();
+                Message message = Message.obtain();
+                message.what = 3;
+                Log.e("d", userLog_json);
+                handler.sendMessage(message);
+            }
+            catch (Exception e){
+                Log.e("getLogInfo", e.toString());
             }
         }
     };
@@ -185,12 +240,28 @@ public class InquiryActivity extends AppCompatActivity {
         printView.setText(sb.toString());
     }
 
+    public void ParsingUserLog(){
+        try{
+            JSONObject jObject = new JSONObject(userLog_json);
+            JSONArray jArray = jObject.getJSONArray("matches");
+            int length = jArray.length();
+            for(int i=0; i<length; i++){
+                JSONObject object =  jArray.getJSONObject(i);
+                Match m = new Match(object.getString("lane"), object.getLong("gameId"), object.getInt("champion"),object.getLong("timestamp"),object.getInt("queue"),object.getString("role"), object.getInt("season"));
+                matches.add(m);
+            };
+        }
+        catch (Exception e){
+            Log.e("ParsingUserLog", e.toString());
+        }
+    }
     public void ParsingUserInfo(){
         try {
             JSONObject jObject = new JSONObject(userInfo_json);
             name = jObject.getString("name");
             summonerLevel = jObject.getLong("summonerLevel");
             id = jObject.getLong("id");
+            accountId = jObject.getLong("accountId");
         }
         catch (Exception e){
             Log.e("ParsingUserInfo", e.toString());
