@@ -4,7 +4,6 @@ public class Match {
     public String lane;
     public long gameId;
     public int champion;
-    public String platformId;
     public long timestamp;
     public int queue;
     public String role;
