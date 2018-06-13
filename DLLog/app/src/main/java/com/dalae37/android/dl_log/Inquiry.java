@@ -27,7 +27,7 @@ public class Inquiry extends AppCompatActivity {
     final private String MATCH_PAGE = "/lol/match/v3/matchlists/by-account/";
     final private String MATCH_DETAIL_PAGE = "/lol/match/v3/matches/";
 
-    Thread userInfo_thread, userLeague_thread, userLog_thread, matchDetail_thread[];
+    Thread userInfo_thread, userLeague_thread, userLog_thread, matchDetail_thread;
     long summonerLevel, id, accountId;
 
     boolean isSummoner, isUnrank, isFlexrank, isFinish;
@@ -57,8 +57,12 @@ public class Inquiry extends AppCompatActivity {
                     GetMatchDetail();
                     break;
                 case 4:
-                    if(matchesIndex == matchesFinishIndex)
+                    if(matchesIndex != matchesFinishIndex) {
+                        matchDetail_thread = new Thread(matchDeatil_runnable);
+                        matchDetail_thread.start();
+                    }else{
                         isFinish = true;
+                    }
                     break;
                 default :
                     break;
@@ -305,12 +309,11 @@ public class Inquiry extends AppCompatActivity {
     public void GetMatchDetail(){
         matchDetails = new ArrayList<>();
         int length = matches.size();
-        matchDetail_thread = new Thread[length];
         matchesFinishIndex = 9;
         matchesIndex = 0;
-        for(int i=0; i<10; i++){
-            matchDetail_thread[i] = new Thread(matchDeatil_runnable);
-            matchDetail_thread[i].start();
-        }
+
+        Message message = Message.obtain();
+        message.what = 4;
+        threadHandler.sendMessage(message);
     }
 }
