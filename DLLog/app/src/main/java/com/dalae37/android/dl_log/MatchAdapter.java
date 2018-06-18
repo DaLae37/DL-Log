@@ -53,6 +53,7 @@ public class MatchAdapter extends ArrayAdapter<Match> {
         whenPlay.setText(matchDetail.gameCreation_RT);
         playTime.setText(matchDetail.gameDuration_RT);
         WinOrLose.setText(String.valueOf(mySummoner.isWin));
+        //champion.setImageResource(DL_Manager.getInstance().getChampionID(mySummoner.championId));
         CS.setText(mySummoner.creepScore + "");
         KDA.setText(mySummoner.kill + "킬 " + mySummoner.assist + "어시스트 " + mySummoner.death + "데스");
         Level.setText(mySummoner.champLevel + "");

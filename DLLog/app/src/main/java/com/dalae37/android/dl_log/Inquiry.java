@@ -16,16 +16,9 @@ import java.util.ArrayList;
 
 import javax.net.ssl.HttpsURLConnection;
 
-public class Inquiry extends AppCompatActivity {
+public class Inquiry extends AppCompatActivity implements  API_Urls{
     ArrayList<Match> matches;
     ArrayList<MatchDetail> matchDetails;
-
-    final private String url = "https://kr.api.riotgames.com";
-    final private String API_KEY = "?api_key=RGAPI-b75df511-8e5c-4d56-81d7-fded3d502af6";
-    final private String INFO_PAGE = "/lol/summoner/v3/summoners/by-name/";
-    final private String LEAGUE_PAGE = "/lol/league/v3/positions/by-summoner/";
-    final private String MATCH_PAGE = "/lol/match/v3/matchlists/by-account/";
-    final private String MATCH_DETAIL_PAGE = "/lol/match/v3/matches/";
 
     Thread userInfo_thread, userLeague_thread, userLog_thread, matchDetail_thread;
     long summonerLevel, id, accountId;
@@ -69,6 +62,7 @@ public class Inquiry extends AppCompatActivity {
             }
         }
     };
+
     final Runnable userInfo_runnable = new Runnable() {
         @Override
         public void run() {
