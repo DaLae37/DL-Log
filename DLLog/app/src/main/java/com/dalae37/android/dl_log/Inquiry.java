@@ -53,7 +53,8 @@ public class Inquiry extends AppCompatActivity implements  API_Urls{
                     if(matchesIndex != matchesFinishIndex) {
                         matchDetail_thread = new Thread(matchDeatil_runnable);
                         matchDetail_thread.start();
-                    }else{
+                    }
+                    else{
                         isFinish = true;
                     }
                     break;

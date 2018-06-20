@@ -12,7 +12,7 @@ public class MatchDetail {
     JSONObject matchJObject;
     public String gameMode;
     public long gameDuration, gameCreation, accountId;
-    public int myParticipantId, teamId[] = new int[2];
+    public int myParticipantId, teamId[] = new int[2], gameQueueId;
     public boolean isFirstWin;
     public String matchJson, gameDuration_RT, gameCreation_RT;
     MatchDetail_Summoner [] summoners = new MatchDetail_Summoner[10];
@@ -74,12 +74,18 @@ public class MatchDetail {
     public void ParseData(){
         try{
             matchJObject = new JSONObject(matchJson);
+
+            gameQueueId = matchJObject.getInt("queueId");
+
+            gameMode = matchJObject.getString("gameMode");
+
             gameDuration = matchJObject.getLong("gameDuration");
-            int second = (int)gameDuration % 60, minute = ((int)gameDuration-second) % 3600, hours = (int)gameDuration/3600;
+            int second = (int)gameDuration % 60, minute = ((int)gameDuration-second) / 60, hours = (int)gameDuration/3600;
             gameDuration_RT = hours + "시 " + minute + "분 " + second + "초";
+
             gameCreation = matchJObject.getLong("gameCreation");
             long current = System.currentTimeMillis();
-            gameCreation_RT = (current - gameCreation) / 60000 + "분전";
+            gameCreation_RT = DL_Manager.getInstance().getGameCreation((current - gameCreation) / 1000);
         }
         catch (Exception e){
             Log.e("ParseData", e.toString());

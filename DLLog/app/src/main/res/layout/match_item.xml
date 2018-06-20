@@ -38,14 +38,16 @@
         android:id="@+id/KDA"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="200dp"
+        android:layout_marginLeft="250dp"
+        android:layout_marginTop="7dp"
         android:text="1킬 5뎃 1어시"
         />
     <TextView
         android:id="@+id/Level"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="200dp"
+        android:layout_marginLeft="250dp"
+        android:layout_marginTop="7dp"
         android:layout_below="@+id/KDA"
         android:text="16렙"
         />
@@ -53,13 +55,15 @@
         android:id="@+id/CS"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="200dp"
+        android:layout_marginLeft="250dp"
+        android:layout_marginTop="7dp"
         android:layout_below="@+id/Level"
         android:text="200cs (6.4)cs"
         />
     <ImageView
         android:id="@+id/championImage"
-        android:layout_marginLeft="75dp"
+        android:layout_marginLeft="150dp"
+        android:layout_marginTop="25dp"
         android:layout_width="64dp"
         android:layout_height="64dp"
         android:src="@drawable/ic_appicon"

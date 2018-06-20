@@ -89,4 +89,21 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         startActivity(intent);
         finish();
     }
+
+    private final long FINISH_INTERVAL_TIME = 2000;
+    private long backPressedTime = 0;
+    @Override
+    public void onBackPressed() {
+        long tempTime = System.currentTimeMillis();
+        long intervalTime = tempTime - backPressedTime;
+
+        if (0 <= intervalTime && FINISH_INTERVAL_TIME >= intervalTime) {
+            finishAffinity();
+            System.runFinalization();
+            System.exit(0);
+        } else {
+            backPressedTime = tempTime;
+            Toast.makeText(this, "한 번더 누르면 종료됩니다.", Toast.LENGTH_SHORT).show();
+        }
+    }
 }

@@ -49,14 +49,14 @@ public class MatchAdapter extends ArrayAdapter<Match> {
 
         final MatchDetail matchDetail = matchDetails.get(position);
         final MatchDetail_Summoner mySummoner = matchDetail.summoners[matchDetail.myParticipantId-1];
-        gameType.setText(matchDetail.gameMode);
+        gameType.setText(DL_Manager.getInstance().getGameMode(matchDetail.gameQueueId));
         whenPlay.setText(matchDetail.gameCreation_RT);
         playTime.setText(matchDetail.gameDuration_RT);
-        WinOrLose.setText(String.valueOf(mySummoner.isWin));
-        //champion.setImageResource(DL_Manager.getInstance().getChampionID(mySummoner.championId));
-        CS.setText(mySummoner.creepScore + "");
-        KDA.setText(mySummoner.kill + "킬 " + mySummoner.assist + "어시스트 " + mySummoner.death + "데스");
-        Level.setText(mySummoner.champLevel + "");
+        WinOrLose.setText(DL_Manager.getInstance().getWinOrLose(mySummoner.isWin));
+        champion.setImageResource(DL_Manager.getInstance().getChampionID(mySummoner.championId));
+        CS.setText("CS : "+ mySummoner.creepScore);
+        KDA.setText(mySummoner.kill + "킬 " + mySummoner.death + "데스"+ mySummoner.assist + "어시스트 ");
+        Level.setText(mySummoner.champLevel + "렙");
         return convertView;
     }
 }

@@ -1,5 +1,6 @@
 package com.dalae37.android.dl_log;
 
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Debug;
 import android.os.Handler;
@@ -10,9 +11,13 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.bumptech.glide.Glide;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -33,17 +38,21 @@ public class InquiryActivity extends Inquiry {
     EditText inputNickname;
     TextView printView;
     ListView logList;
-
+    LinearLayout inquiryLayout, loadingLayout;
+    ImageView loadingGIF;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_inquiry);
 
-        logList = (ListView)findViewById(R.id.logList);
-        printView = (TextView)findViewById(R.id.printView);
-        inputNickname = (EditText)findViewById(R.id.inputNickname);
-        inquiryButton = (Button)findViewById(R.id.inquiryButton);
+        inquiryLayout = findViewById(R.id.inquiryLayout);
+        loadingLayout = findViewById(R.id.loadingLayout);
+
+        logList = findViewById(R.id.logList);
+        printView = findViewById(R.id.printView);
+        inputNickname = findViewById(R.id.inputNickname);
+        inquiryButton = findViewById(R.id.inquiryButton);
         inquiryButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -63,6 +72,10 @@ public class InquiryActivity extends Inquiry {
                 }
             }
         });
+
+        loadingGIF = findViewById(R.id.loadingGIF);
+        Glide.with(this).load(R.raw.loading).into(loadingGIF);
+
     }
 
     final Handler printHandler = new Handler() {
@@ -70,8 +83,11 @@ public class InquiryActivity extends Inquiry {
         public void handleMessage(Message msg) {
             switch (msg.what){
                 case 1 :
+                    inquiryLayout.setVisibility(View.GONE);
+                    loadingLayout.setVisibility(View.VISIBLE);
                     if(!isSummoner) {
                         printView.setText("유저를 찾을 수 없습니다.");
+
                         isFinish = true;
                     }
                     break;
@@ -81,8 +97,11 @@ public class InquiryActivity extends Inquiry {
                 case 3:
                     break;
                 case 4:
-                    PrintLog();
                     break;
+                case 37 :
+                    PrintLog();
+                    inquiryLayout.setVisibility(View.VISIBLE);
+                    loadingLayout.setVisibility(View.GONE);
                 default :
                     break;
             }
@@ -92,6 +111,7 @@ public class InquiryActivity extends Inquiry {
     final Runnable checkProgress_runnable = new Runnable() {
         @Override
         public void run() {
+
             int beforeProgress = 0;
             do{
              if(beforeProgress != progress){
@@ -101,6 +121,9 @@ public class InquiryActivity extends Inquiry {
                  printHandler.sendMessage(message);
              }
             }while(!isFinish);
+            Message message = Message.obtain();
+            message.what = 37;
+            printHandler.sendMessage(message);
         }
     };
 
@@ -119,8 +142,16 @@ public class InquiryActivity extends Inquiry {
         printView.setText(sb.toString());
     }
     public void PrintLog(){
-        MatchAdapter adapter = new MatchAdapter(this,R.layout.match_item,matchDetails);
-        logList.setAdapter(adapter);
+        if(isSummoner) {
+            MatchAdapter adapter = new MatchAdapter(this, R.layout.match_item, matchDetails);
+            logList.setAdapter(adapter);
+        }
     }
 
+    @Override
+    public void onBackPressed() {
+        Intent intent = new Intent(getApplicationContext(), FunctionActivity.class);
+        startActivity(intent);
+        finish();
+    }
 }

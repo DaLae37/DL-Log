@@ -5,35 +5,54 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
     <LinearLayout
-        android:background="@color/colorAccent"
+        android:id="@+id/inquiryLayout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:layout_height="match_parent"
+        android:visibility="visible"
+        android:orientation="vertical">
+        <LinearLayout
+            android:background="@color/colorAccent"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/nickname_field"
+                android:textSize="20sp"/>
+            <EditText
+                android:id="@+id/inputNickname"
+                android:layout_width="200dp"
+                android:layout_height="wrap_content"
+                android:maxLength="16"
+                android:inputType="text"/>
+            <Button
+                android:id="@+id/inquiryButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/search_button"/>
+        </LinearLayout>
         <TextView
+            android:id="@+id/printView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/nickname_field"
-            android:textSize="20sp"/>
-        <EditText
-            android:id="@+id/inputNickname"
-            android:layout_width="200dp"
-            android:layout_height="wrap_content"
-            android:maxLength="16"
-            android:inputType="text"/>
-        <Button
-            android:id="@+id/inquiryButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/search_button"/>
-    </LinearLayout>
-    <TextView
-        android:id="@+id/printView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textSize="20sp"
-        />
+            android:textSize="20sp"
+            />
         <ListView
             android:id="@+id/logList"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"></ListView>
+    </LinearLayout>
+    <LinearLayout
+        android:id="@+id/loadingLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:visibility="gone"
+        android:background="#000000">
+        <ImageView
+            android:id="@+id/loadingGIF"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
 </LinearLayout>
