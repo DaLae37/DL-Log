@@ -106,7 +106,8 @@ public class SignUP_Activity extends AppCompatActivity implements View.OnClickLi
         @Override
         public void run() {
             try {
-                String urlParameters  = "username=" + nick.getText().toString() +"&id=" + id.getText().toString() + "&password=" +pw.getText().toString();
+                String urlParameters  = "username=" + nick.getText().toString() +"&id=" + id.getText().toString() +
+                        "&password=" +pw.getText().toString();
                 byte[] postData = urlParameters.getBytes( StandardCharsets.UTF_8 );
                 int postDataLength = postData.length;
                 URL fullUrl = new URL("http://soylatte.kr:8681/register");

@@ -311,7 +311,7 @@ public class Inquiry extends AppCompatActivity implements  API_Urls{
     public void GetMatchDetail(){
         matchDetails = new ArrayList<>();
         int length = matches.size();
-        matchesFinishIndex = 9;
+        matchesFinishIndex = 20;
         matchesIndex = 0;
 
         Message message = Message.obtain();
@@ -328,12 +328,15 @@ public class Inquiry extends AppCompatActivity implements  API_Urls{
             for (int i = 0; i < length; i++) {
                 Match match = matches.get(i);
                 long gameid = match.gameId;
-                Cursor cursor = db_r.rawQuery("select * from date_tb where gameid=" + gameid + ";", null);
+                Cursor cursor = db_r.rawQuery("select * from date_tb where gameid=" + gameid + ";"
+                        , null);
                 if (cursor.getCount() == 0) {
                     Date date = new Date(match.timestamp);
                     DateFormat formatter = new SimpleDateFormat("yyyy/MM/dd");
                     String[] times = formatter.format(date).toString().split("/");
-                    db_w.execSQL("insert into date_tb (year, month, day, gameid, nickname) values(?,?,?,?,?)", new String[]{times[0], Integer.valueOf(times[1])+"", Integer.valueOf(times[2])+"", String.valueOf(match.gameId), name.toLowerCase()});
+                    db_w.execSQL("insert into date_tb (year, month, day, gameid, nickname) values(?,?,?,?,?)"
+                            , new String[]{times[0], Integer.valueOf(times[1])+"", Integer.valueOf(times[2])+"",
+                                    String.valueOf(match.gameId), name.toLowerCase()});
                 }
             }
             db_w.close();
