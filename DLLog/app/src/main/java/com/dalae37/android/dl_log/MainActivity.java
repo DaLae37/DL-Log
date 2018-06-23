@@ -4,6 +4,8 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -13,30 +15,44 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
+import java.io.DataOutputStream;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.nio.charset.StandardCharsets;
+
+import javax.net.ssl.HttpsURLConnection;
+
 public class MainActivity extends AppCompatActivity implements View.OnClickListener{
     Button logIN;
     EditText inputID,inputPW;
     TextView findID, findPW, signUP, nonMember;
-
+    String loginResult;
     SharedPreferences sp;
+    boolean isTryLogin = false;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        logIN = (Button)findViewById(R.id.logIN);
+        logIN = findViewById(R.id.logIN);
         logIN.setOnClickListener(this);
 
-        inputID = (EditText)findViewById(R.id.inputID);
-        inputPW = (EditText)findViewById(R.id.inputPW);
+        inputID = findViewById(R.id.inputID);
+        inputPW = findViewById(R.id.inputPW);
 
-        findID = (TextView)findViewById(R.id.findID);
+        findID = findViewById(R.id.findID);
         findID.setOnClickListener(this);
-        findPW = (TextView)findViewById(R.id.findPW);
+        findPW = findViewById(R.id.findPW);
         findPW.setOnClickListener(this);
-        signUP = (TextView)findViewById(R.id.signUP);
+        signUP = findViewById(R.id.signUP);
         signUP.setOnClickListener(this);
-        nonMember = (TextView)findViewById(R.id.nonMember);
+        nonMember = findViewById(R.id.nonMember);
         nonMember.setOnClickListener(this);
     }
 
@@ -44,16 +60,18 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.logIN :
-                String id = inputID.getText().toString();
-                String pw = inputPW.getText().toString();
-                if(CheckIDandPW(id,pw)){
-                    Toast.makeText(getApplicationContext(), "로그인 성공", Toast.LENGTH_SHORT).show();
+                if(!isTryLogin){
+                    isTryLogin = true;
+                    loginThread = new Thread(loginRunnable);
+                    loginThread.start();
+                }
+                //String id = inputID.getText().toString();
+                //String pw = inputPW.getText().toString();
+                //if(CheckIDandPW(id,pw)){
+                //    Toast.makeText(getApplicationContext(), "로그인 성공", Toast.LENGTH_SHORT).show();
 
-                    FunctionActivity();
-                }
-                else{
-                    Toast.makeText(getApplicationContext(),"아이디 혹은 비밀번호가 틀립니다",Toast.LENGTH_SHORT).show();
-                }
+                    //FunctionActivity();
+                //}
                 break;
             case R.id.signUP :
                 Intent intent = new Intent(getApplicationContext(), SignUP_Activity.class);
@@ -72,7 +90,25 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
-    public boolean CheckIDandPW(String id, String pw){
+    public void CheckLoginResult(){
+        try {
+            JSONObject jObject = new JSONObject(loginResult);
+            String success = jObject.getString("success"), message = jObject.getString("message");
+            if(success.equals("true")){
+                DL_Manager.getInstance().setNickname(message);
+                Toast.makeText(getApplicationContext(), "로그인 성공", Toast.LENGTH_SHORT).show();
+                FunctionActivity();
+            }
+            else{
+                Toast.makeText(getApplicationContext(), "아이디 혹은 비밀번호가 틀립니다", Toast.LENGTH_SHORT).show();
+            }
+            isTryLogin = false;
+        }
+        catch (Exception e){
+            Log.e("CheckLoginResult",e.toString());
+        }
+    }
+    /*public boolean CheckIDandPW(String id, String pw){
         MemberDB helper = new MemberDB(getApplicationContext());
         SQLiteDatabase db = helper.getReadableDatabase();
         Cursor cursor = db.rawQuery("select id, pw from member_tb",null);
@@ -82,7 +118,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             hasSign = (cursor.getString(0).equals(id)) && (cursor.getString(1).equals(pw));
         }
         return hasSign;
-    }
+    }*/
 
     public void FunctionActivity(){
         Intent intent = new Intent(getApplicationContext(), FunctionActivity.class);
@@ -106,4 +142,69 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             Toast.makeText(this, "한 번더 누르면 종료됩니다.", Toast.LENGTH_SHORT).show();
         }
     }
+    final Handler threadHandler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            switch (msg.what) {
+                case 1:
+                    CheckLoginResult();
+                    break;
+            }
+        }
+    };
+
+    Thread loginThread;
+    final Runnable loginRunnable = new Runnable() {
+        @Override
+        public void run() {
+            try {
+                String urlParameters  = "id=" + inputID.getText().toString() + "&password=" +inputPW.getText().toString();
+                byte[] postData = urlParameters.getBytes( StandardCharsets.UTF_8 );
+                int postDataLength = postData.length;
+                URL fullUrl = new URL("http://soylatte.kr:8681/login");
+                HttpURLConnection conn = (HttpURLConnection) fullUrl.openConnection();
+
+                conn.setConnectTimeout(3000); //응답시간 3초
+                conn.setReadTimeout(3000); //Read연결시간
+                conn.setInstanceFollowRedirects(false);
+                conn.setRequestMethod("POST");
+                conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+                conn.setRequestProperty("charset", "utf-8");
+                conn.setRequestProperty("Content-Length", Integer.toString(postDataLength ));
+                conn.setDoOutput(true);
+                conn.setUseCaches(false);
+                try(DataOutputStream wr = new DataOutputStream(conn.getOutputStream())) {
+                    wr.write( postData );
+                }
+
+                int responStatusCode = conn.getResponseCode();
+                InputStream inputStream;
+                if (responStatusCode == conn.HTTP_OK) {
+                    inputStream = conn.getInputStream();
+                }
+                else {
+                    inputStream = conn.getErrorStream();
+                }
+                InputStreamReader inputStreamReader = new InputStreamReader(inputStream, "UTF-8");
+                BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
+
+                StringBuilder sb = new StringBuilder();
+                String line;
+                while ((line = bufferedReader.readLine()) != null) {
+                    sb.append(line);
+                }
+                bufferedReader.close();
+                conn.disconnect();
+
+                loginResult = sb.toString().trim();
+                Message message = Message.obtain();
+                message.what = 1;
+                threadHandler.sendMessage(message);
+            }
+            catch (Exception e){
+                Log.e("getLogInfo", e.toString());
+                isTryLogin = false;
+            }
+        }
+    };
 }

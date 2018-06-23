@@ -25,6 +25,7 @@ import org.json.JSONObject;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -52,6 +53,7 @@ public class InquiryActivity extends Inquiry {
         logList = findViewById(R.id.logList);
         printView = findViewById(R.id.printView);
         inputNickname = findViewById(R.id.inputNickname);
+        inputNickname.setText(DL_Manager.getInstance().getNickname());
         inquiryButton = findViewById(R.id.inquiryButton);
         inquiryButton.setOnClickListener(new View.OnClickListener() {
             @Override

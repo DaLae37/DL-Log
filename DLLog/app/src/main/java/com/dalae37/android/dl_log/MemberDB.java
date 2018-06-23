@@ -6,7 +6,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
 public class MemberDB extends SQLiteOpenHelper {
-    static final String DB_NAME = "member.db";
+    static final String DB_NAME = "member_db";
     static int DB_VERSION = 1;
     static String TABLE_NAME = "member_tb";
     public MemberDB(Context context){

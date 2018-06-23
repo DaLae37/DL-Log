@@ -1,5 +1,7 @@
 package com.dalae37.android.dl_log;
 
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
@@ -12,7 +14,11 @@ import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 
 import javax.net.ssl.HttpsURLConnection;
 
@@ -55,6 +61,7 @@ public class Inquiry extends AppCompatActivity implements  API_Urls{
                         matchDetail_thread.start();
                     }
                     else{
+                        SetDateDB();
                         isFinish = true;
                     }
                     break;
@@ -310,5 +317,27 @@ public class Inquiry extends AppCompatActivity implements  API_Urls{
         Message message = Message.obtain();
         message.what = 4;
         threadHandler.sendMessage(message);
+    }
+
+    public void SetDateDB(){
+        if(DL_Manager.getInstance().getNickname().toLowerCase().equals(name.toLowerCase())) {
+            DateDB helper = new DateDB(getApplicationContext());
+            SQLiteDatabase db_w = helper.getWritableDatabase();
+            SQLiteDatabase db_r = helper.getReadableDatabase();
+            int length = matches.size();
+            for (int i = 0; i < length; i++) {
+                Match match = matches.get(i);
+                long gameid = match.gameId;
+                Cursor cursor = db_r.rawQuery("select * from date_tb where gameid=" + gameid + ";", null);
+                if (cursor.getCount() == 0) {
+                    Date date = new Date(match.timestamp);
+                    DateFormat formatter = new SimpleDateFormat("yyyy/MM/dd");
+                    String[] times = formatter.format(date).toString().split("/");
+                    db_w.execSQL("insert into date_tb (year, month, day, gameid, nickname) values(?,?,?,?,?)", new String[]{times[0], Integer.valueOf(times[1])+"", Integer.valueOf(times[2])+"", String.valueOf(match.gameId), name.toLowerCase()});
+                }
+            }
+            db_w.close();
+            db_r.close();
+        }
     }
 }

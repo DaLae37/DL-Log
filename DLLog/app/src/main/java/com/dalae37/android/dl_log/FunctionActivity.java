@@ -8,17 +8,26 @@ import android.widget.Button;
 import android.widget.Toast;
 
 public class FunctionActivity extends AppCompatActivity {
-    Button toInquiry;
+    Button toInquiry, toCalendar;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_function);
 
-        toInquiry = (Button)findViewById(R.id.toInquiry);
+        toInquiry = findViewById(R.id.toInquiry);
         toInquiry.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getApplicationContext(), InquiryActivity.class);
+                startActivity(intent);
+                finish();
+            }
+        });
+        toCalendar = findViewById(R.id.toCalendar);
+        toCalendar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(), CalendarActivity.class);
                 startActivity(intent);
                 finish();
             }

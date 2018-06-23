@@ -8,4 +8,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/log_search"/>
+    <Button
+        android:id="@+id/toCalendar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="캘린더"/>
 </LinearLayout>

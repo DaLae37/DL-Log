@@ -2,8 +2,10 @@ package com.dalae37.android.dl_log;
 
 public class DL_Manager {
     private static DL_Manager instance;
-    private DL_Manager(){}
-
+    private DL_Manager(){
+        this.nickname = "dalae37";
+    }
+    private String nickname;
     private static class Singleton{
         private static final DL_Manager instance = new DL_Manager();
     }
@@ -11,6 +13,12 @@ public class DL_Manager {
     public static DL_Manager getInstance (){
         return Singleton.instance;
     } //Singleton Area
+    public void setNickname(String nickname){
+        this.nickname = nickname;
+    }
+    public String getNickname(){
+        return this.nickname;
+    }
     public int getChampionID(int champion){
         int resouceID;
         switch (champion) {

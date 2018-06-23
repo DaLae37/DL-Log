@@ -66,7 +66,7 @@
         android:layout_marginTop="25dp"
         android:layout_width="64dp"
         android:layout_height="64dp"
-        android:src="@drawable/ic_appicon"
+        android:src="@drawable/sejuani"
         />
 
 </RelativeLayout>
