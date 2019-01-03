@@ -75,7 +75,8 @@ public class Inquiry extends AppCompatActivity implements  API_Urls{
         @Override
         public void run() {
             try{
-                URL fullUrl = new URL(url + INFO_PAGE + name + API_KEY);
+
+                URL fullUrl = new URL(url + INFO_PAGE + name + getString(R.string.api_key));
                 HttpsURLConnection conn = (HttpsURLConnection) fullUrl.openConnection();
                 conn.setConnectTimeout(3000); //응답시간 3초
                 conn.setReadTimeout(3000); //Read연결시간
@@ -119,7 +120,7 @@ public class Inquiry extends AppCompatActivity implements  API_Urls{
         @Override
         public void run() {
             try{
-                URL fullUrl = new URL(url + LEAGUE_PAGE + String.valueOf(id) + API_KEY);
+                URL fullUrl = new URL(url + LEAGUE_PAGE + String.valueOf(id) + getString(R.string.api_key));
                 HttpsURLConnection conn = (HttpsURLConnection) fullUrl.openConnection();
                 conn.setConnectTimeout(3000); //응답시간 3초
                 conn.setReadTimeout(3000); //Read연결시간
@@ -160,7 +161,7 @@ public class Inquiry extends AppCompatActivity implements  API_Urls{
         @Override
         public void run() {
             try{
-                URL fullUrl = new URL(url + MATCH_PAGE + String.valueOf(accountId) + API_KEY);
+                URL fullUrl = new URL(url + MATCH_PAGE + String.valueOf(accountId) + getString(R.string.api_key));
                 HttpsURLConnection conn = (HttpsURLConnection) fullUrl.openConnection();
                 conn.setConnectTimeout(3000); //응답시간 3초
                 conn.setReadTimeout(3000); //Read연결시간
@@ -201,7 +202,7 @@ public class Inquiry extends AppCompatActivity implements  API_Urls{
         @Override
         public void run() {
             try {
-                URL fullUrl = new URL(url + MATCH_DETAIL_PAGE + String.valueOf(matches.get(matchesIndex++).gameId) + API_KEY);
+                URL fullUrl = new URL(url + MATCH_DETAIL_PAGE + String.valueOf(matches.get(matchesIndex++).gameId) + getString(R.string.api_key));
                 HttpsURLConnection conn = (HttpsURLConnection) fullUrl.openConnection();
                 conn.setConnectTimeout(3000); //응답시간 3초
                 conn.setReadTimeout(3000); //Read연결시간

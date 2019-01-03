@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="api_key">"?api_key=RGAPI-64333ce9-fba6-40fc-a676-b2c5a3fa24d9"</string>
     <string name="app_name">DL-Log</string>
     <string name="inputID">아이디</string>
     <string name="inputPW">비밀번호</string>
